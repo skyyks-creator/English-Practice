@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadowing Studio - V4 Final</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .fade-in { animation: fadeIn 0.5s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .playing-line { background-color: #f3f4f6; border-left: 3px solid #000; padding-left: 0.75rem !important; transition: all 0.2s ease; }
+    .shadowing-item { transition: all 0.2s ease; border-left: 3px solid transparent; padding-left: 1rem; }
+    .playing-article { border-color: #000; background-color: #fafafa; }
+
+    .word-perfect { color: #059669; font-weight: 700; } 
+    .word-missed { color: #E11D48; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; } 
+  </style>
+</head>
+<body class="bg-[#F9FAFB] text-gray-900 antialiased pb-20">
+
+  <!-- ★ 상단 슬림 고정 바 ★ -->
+  <div class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-xl mx-auto px-4 py-2 flex items-center justify-between gap-2">
+      <h1 class="text-sm font-bold tracking-tighter text-black shrink-0">SHADOW<span class="font-normal text-gray-400">.studio</span></h1>
+      
+      <div class="flex items-center gap-1.5 overflow-x-auto">
+        <button onclick="playFullArticle()" id="btn-play-all" class="px-3 py-1.5 bg-black text-white hover:bg-gray-800 rounded-md text-xs font-semibold shrink-0 transition">
+          ▶ 전문듣기
+        </button>
+        <button onclick="stopAudio()" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-xs font-semibold shrink-0 transition">
+          ⏹ 정지
+        </button>
+        <button onclick="setSpeed(0.85)" id="btn-speed-08" class="px-2 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-xs font-bold shrink-0 transition">
+          0.85x
+        </button>
+        <button onclick="setSpeed(1.0)" id="btn-speed-10" class="px-2 py-1.5 bg-black text-white rounded-md text-xs font-bold shrink-0 transition">
+          1.0x
+        </button>
+        <button onclick="toggleABLoop()" id="btn-loop" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-md text-xs font-bold shrink-0 transition flex items-center gap-1">
+          🔁 <span id="loop-status">OFF</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 본문 영역 -->
+  <main class="max-w-xl mx-auto p-5 space-y-10 mt-2 fade-in">
+    
+    <!-- 1. Today's Article (Dynamic Date Simulation) -->
+    <section class="space-y-4">
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <span class="text-[10px] font-bold text-white bg-black px-2 py-0.5 rounded-sm uppercase tracking-widest">Daily Auto-Updated</span>
+          <span id="current-date" class="text-xs font-medium text-gray-500">July 28, 2026</span>
+        </div>
+        <h2 class="text-xl font-bold leading-tight tracking-tight text-black">Redefining the Workforce: How Strategic Leaders are Spearheading AI Integration</h2>
+      </div>
+
+      <div id="article-box" class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm space-y-4 text-[14px] leading-loose text-gray-700 transition-colors">
+        <p><span class="text-2xl font-bold float-left mr-1.5 leading-none text-black">T</span>he rapid deployment of generative AI and autonomous agents is no longer just a technological novelty; it has become a fundamental driver of corporate restructuring. Across global markets, executives are moving beyond experimental phases and are now meticulously integrating these advanced systems into their core operations to optimize efficiency and significantly reduce overhead costs.</p>
+        <p>Professionals who successfully navigate this transition are those capable of articulating their impact on the business. It is not enough to simply use new tools. Today's leading project managers and operational heads are the ones who have actively <strong>spearheaded</strong> cross-functional initiatives, <strong>streamlined</strong> legacy workflows, and <strong>implemented</strong> robust data-driven strategies.</p>
+        <p>Ultimately, the professionals who will thrive in the 2026 corporate landscape are those who can clearly demonstrate a track record of driving measurable results. Whether it involves <strong>orchestrating</strong> a major software deployment or <strong>mitigating</strong> potential risks through predictive analytics, the ability to clearly <strong>articulate</strong> these professional achievements in international business settings has never been more critical.</p>
+      </div>
+    </section>
+
+    <!-- 2. Vocabulary -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-bold text-black border-b border-gray-200 pb-2">Business Vocabulary & Action Verbs</h3>
+      <div class="grid grid-cols-2 gap-3">
+        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+          <span class="font-bold text-sm text-black">spearhead</span>
+          <span class="text-[11px] text-gray-500 mt-1">(프로젝트를) 주도하다</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+          <span class="font-bold text-sm text-black">streamline</span>
+          <span class="text-[11px] text-gray-500 mt-1">(업무를) 효율화하다</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+          <span class="font-bold text-sm text-black">implement</span>
+          <span class="text-[11px] text-gray-500 mt-1">도입하다, 시행하다</span>
+        </div>
+        <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-center">
+          <span class="font-bold text-sm text-black">articulate</span>
+          <span class="text-[11px] text-gray-500 mt-1">분명히 표현·설명하다</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Shadowing Script -->
+    <section class="space-y-4">
+      <div class="space-y-1">
+        <h3 class="text-sm font-bold text-black border-b border-gray-200 pb-2">Shadowing Script</h3>
+        <p class="text-[11px] text-gray-400 pt-1">* 아래 문장을 클릭하면 즉시 해당 문장만 재생되며 반복 학습이 가능합니다.</p>
+      </div>
+
+      <div id="script-container" class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden text-[14px] text-gray-800 font-medium leading-relaxed">
+        <!-- JS로 문장 주입됨 -->
+      </div>
+    </section>
+
+    <!-- 4. V3 AI Pronunciation Evaluation -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-bold text-black border-b border-gray-200 pb-2">AI Speaking Evaluation</h3>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
+        <p class="text-xs text-gray-500">핵심 문장을 마이크에 대고 읽어보세요. 발음 정확도를 분석해 줍니다.</p>
+        
+        <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+          <p id="eval-target" class="text-[14px] font-medium text-gray-800">
+            Today's leading managers have actively spearheaded cross-functional initiatives.
+          </p>
+        </div>
+
+        <button id="record-btn" onclick="startEvaluation()" class="w-full py-3 bg-black text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition flex justify-center items-center gap-2">
+          🎙️ 마이크로 발음 녹음하기
+        </button>
+        <p id="status-text" class="text-center text-xs text-gray-400 hidden">Listening...</p>
+
+        <div id="feedback-panel" class="hidden space-y-3 pt-2 border-t border-gray-100 fade-in">
+          <div class="flex items-center gap-4 bg-gray-50 p-4 rounded-xl">
+            <div class="text-3xl font-extrabold text-black" id="score-text">0점</div>
+            <p id="score-feedback" class="text-xs font-medium text-gray-600"></p>
+          </div>
+          <div id="visual-feedback" class="text-[14px] leading-relaxed p-3 bg-gray-50 rounded-xl border border-gray-100"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ★ 5. V4 New Feature: AI Rephrasing Studio (문장 첨삭) ★ -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-bold text-black border-b border-gray-200 pb-2">AI Rephrasing Studio</h3>
+      <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm space-y-4">
+        <p class="text-xs text-gray-500">오늘 배운 단어를 활용해 나의 업무 경험을 간단히 적어보세요. 이력서용 세련된 표현으로 바꿔드립니다.</p>
+        
+        <textarea id="user-input" rows="3" placeholder="예: I made a new system to make work faster." class="w-full p-3 text-[14px] border border-gray-200 rounded-xl focus:outline-none focus:border-black resize-none"></textarea>
+
+        <button onclick="requestRephrasing()" class="w-full py-3 bg-black text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition">
+          ✨ 프로페셔널 문장으로 업그레이드
+        </button>
+
+        <div id="rephrase-result" class="hidden space-y-2 pt-2 border-t border-gray-100 fade-in">
+          <span class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">Optimized Resume Style</span>
+          <div id="rephrase-output" class="p-3 bg-gray-50 rounded-xl border border-gray-100 text-[14px] font-medium text-gray-800 leading-relaxed">
+            <!-- 첨삭 결과 주입 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Quiz -->
+    <section class="space-y-4">
+      <h3 class="text-sm font-bold text-black border-b border-gray-200 pb-2">Quick Review</h3>
+      <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-4">
+        <div class="space-y-2">
+          <p class="text-[14px] text-gray-700 bg-gray-50 p-3 rounded-lg border border-gray-100">
+            "The manager successfully <span class="inline-block w-20 border-b-2 border-black"></span> the deployment of the new system across three offices."
+          </p>
+        </div>
+        <div class="space-y-2 pt-2">
+          <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-black transition-colors">
+            <input type="radio" name="quiz1" class="w-4 h-4 accent-black">
+            <span class="text-[14px] text-gray-700 font-medium">mitigated</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-black transition-colors">
+            <input type="radio" name="quiz1" class="w-4 h-4 accent-black">
+            <span class="text-[14px] text-gray-700 font-medium">spearheaded</span>
+          </label>
+          <label class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-black transition-colors">
+            <input type="radio" name="quiz1" class="w-4 h-4 accent-black">
+            <span class="text-[14px] text-gray-700 font-medium">articulated</span>
+          </label>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // 날짜 자동 표시 (오늘 날짜)
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('current-date').innerText = new Date().toLocaleDateString('en-US', options);
+
+    const fullArticleText = "The rapid deployment of generative AI and autonomous agents is no longer just a technological novelty; it has become a fundamental driver of corporate restructuring. Across global markets, executives are moving beyond experimental phases and are now meticulously integrating these advanced systems into their core operations to optimize efficiency and significantly reduce overhead costs. Professionals who successfully navigate this transition are those capable of articulating their impact on the business. It is not enough to simply use new tools. Today's leading project managers and operational heads are the ones who have actively spearheaded cross-functional initiatives, streamlined legacy workflows, and implemented robust data-driven strategies. Ultimately, the professionals who will thrive in the 2026 corporate landscape are those who can clearly demonstrate a track record of driving measurable results. Whether it involves orchestrating a major software deployment or mitigating potential risks through predictive analytics, the ability to clearly articulate these professional achievements in international business settings has never been more critical.";
+
+    const targetSentences = [
+      "Today's leading managers have actively spearheaded cross-functional initiatives.",
+      "They have streamlined legacy workflows and implemented robust data-driven strategies.",
+      "The ability to clearly articulate professional achievements has never been more critical.",
+      "Professionals who navigate this transition are capable of articulating their impact."
+    ];
+
+    let currentSpeed = 1.0;
+    let isLooping = false;
+    let loopInterval = null;
+    let lastPlayedIndex = -1; 
+    let synth = window.speechSynthesis;
+
+    function renderScript() {
+      const container = document.getElementById('script-container');
+      container.innerHTML = targetSentences.map((s, idx) => `
+        <div id="line-${idx}" onclick="playSingleSentence(${idx})" class="shadowing-item p-4 hover:bg-gray-50 border-b border-gray-50 cursor-pointer flex gap-3">
+          <span class="text-gray-300 font-bold select-none mt-0.5 text-xs">0${idx + 1}</span>
+          <p>${s}</p>
+        </div>
+      `).join('');
+    }
+
+    function speak(text, mode, index = -1, onEndCallback = null) {
+      synth.cancel(); 
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = currentSpeed;
+
+      const voices = synth.getVoices();
+      const usVoices = voices.filter(v => v.lang.startsWith('en-US'));
+      utterance.voice = usVoices.find(v => v.name.includes('Google') || v.name.includes('Samantha')) || usVoices[0];
+
+      document.querySelectorAll('.shadowing-item').forEach(el => el.classList.remove('playing-line'));
+      document.getElementById('article-box').classList.remove('playing-article');
+      
+      if (mode === 'full') {
+        document.getElementById('article-box').classList.add('playing-article');
+      } else if (mode === 'sentence') {
+        const activeEl = document.getElementById(`line-${index}`);
+        if (activeEl) activeEl.classList.add('playing-line');
+      }
+
+      utterance.onend = () => {
+        if (!isLooping) {
+          document.querySelectorAll('.shadowing-item').forEach(el => el.classList.remove('playing-line'));
+          document.getElementById('article-box').classList.remove('playing-article');
+        }
+        if (onEndCallback) onEndCallback();
+      };
+
+      synth.speak(utterance);
+    }
+
+    function playFullArticle() {
+      disableLoop();
+      lastPlayedIndex = -1;
+      speak(fullArticleText, 'full');
+    }
+
+    function playSingleSentence(idx) {
+      disableLoop();
+      lastPlayedIndex = idx;
+      speak(targetSentences[idx], 'sentence', idx);
+    }
+
+    function toggleABLoop() {
+      if (lastPlayedIndex === -1) {
+        alert("A-B 반복 기능은 'Shadowing Script'에서 특정 문장을 클릭한 뒤에 사용 가능합니다.");
+        return;
+      }
+
+      const loopBtn = document.getElementById('btn-loop');
+      const loopStatus = document.getElementById('loop-status');
+
+      if (isLooping) {
+        disableLoop();
+      } else {
+        isLooping = true;
+        loopStatus.innerText = 'ON';
+        loopBtn.classList.replace('bg-gray-100', 'bg-emerald-600');
+        loopBtn.classList.replace('text-gray-700', 'text-white');
+        
+        const loopPlay = () => {
+          if (!isLooping) return;
+          speak(targetSentences[lastPlayedIndex], 'sentence', lastPlayedIndex, () => {
+            loopInterval = setTimeout(loopPlay, 800); 
+          });
+        };
+        loopPlay();
+      }
+    }
+
+    function disableLoop() {
+      isLooping = false;
+      clearTimeout(loopInterval);
+      const loopBtn = document.getElementById('btn-loop');
+      const loopStatus = document.getElementById('loop-status');
+      
+      loopStatus.innerText = 'OFF';
+      loopBtn.classList.replace('bg-emerald-600', 'bg-gray-100');
+      loopBtn.classList.replace('text-white', 'text-gray-700');
+    }
+
+    function stopAudio() {
+      disableLoop();
+      synth.cancel();
+      document.querySelectorAll('.shadowing-item').forEach(el => el.classList.remove('playing-line'));
+      document.getElementById('article-box').classList.remove('playing-article');
+    }
+
+    function setSpeed(speed) {
+      currentSpeed = speed;
+      const btn08 = document.getElementById('btn-speed-08');
+      const btn10 = document.getElementById('btn-speed-10');
+      
+      if (speed === 0.85) {
+        btn08.classList.replace('bg-gray-100', 'bg-black');
+        btn08.classList.replace('text-gray-700', 'text-white');
+        btn10.classList.replace('bg-black', 'bg-gray-100');
+        btn10.classList.replace('text-white', 'text-gray-700');
+      } else {
+        btn10.classList.replace('bg-gray-100', 'bg-black');
+        btn10.classList.replace('text-gray-700', 'text-white');
+        btn08.classList.replace('bg-black', 'bg-gray-100');
+        btn08.classList.replace('text-white', 'text-gray-700');
+      }
+      
+      if (synth.speaking) {
+        if (lastPlayedIndex === -1) speak(fullArticleText, 'full');
+        else speak(targetSentences[lastPlayedIndex], 'sentence', lastPlayedIndex);
+      }
+    }
+
+    // V3 발음 평가 로직
+    function startEvaluation() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert("크롬 또는 사파리 브라우저의 마이크 인식을 이용해주세요.");
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      const btn = document.getElementById('record-btn');
+      const status = document.getElementById('status-text');
+      const panel = document.getElementById('feedback-panel');
+
+      btn.disabled = true;
+      btn.innerText = "🎙️ 듣는 중...";
+      status.classList.remove('hidden');
+      panel.classList.add('hidden');
+
+      recognition.start();
+
+      recognition.onresult = (e) => {
+        const spokenText = e.results[0][0].transcript;
+        processEvaluation(spokenText);
+        resetRecordBtn(btn, status);
+      };
+
+      recognition.onerror = () => {
+        resetRecordBtn(btn, status);
+        alert("음성이 인식되지 않았습니다. 다시 시도해 주세요.");
+      };
+    }
+
+    function processEvaluation(spokenText) {
+      const targetStr = document.getElementById('eval-target').innerText;
+      const targetWords = targetStr.replace(/[.,]/g, "").toLowerCase().split(" ");
+      const spokenWords = spokenText.replace(/[.,]/g, "").toLowerCase().split(" ");
+
+      let matchCount = 0;
+      let htmlOutput = "";
+
+      targetWords.forEach(word => {
+        if (spokenWords.includes(word)) {
+          matchCount++;
+          htmlOutput += `<span class="word-perfect">${word} </span>`;
+        } else {
+          htmlOutput += `<span class="word-missed">${word} </span>`;
+        }
+      });
+
+      let score = Math.round((matchCount / targetWords.length) * 100);
+      let feedback = score >= 90 ? "완벽합니다! 원어민의 억양이 훌륭하게 녹아있네요." : "좋습니다! 빨간색으로 표시된 단어의 강세를 조금 더 신경 써보세요.";
+
+      document.getElementById('feedback-panel').classList.remove('hidden');
+      document.getElementById('score-text').innerText = `${score}점`;
+      document.getElementById('score-feedback').innerText = feedback;
+      document.getElementById('visual-feedback').innerHTML = htmlOutput;
+    }
+
+    function resetRecordBtn(btn, status) {
+      btn.disabled = false;
+      btn.innerText = "🎙️ 마이크로 발음 녹음하기";
+      status.classList.add('hidden');
+    }
+
+    // ★ V4 Rephrasing 시뮬레이션 함수 ★
+    function requestRephrasing() {
+      const input = document.getElementById('user-input').value.trim();
+      if (!input) {
+        alert("먼저 본인의 업무 경험 문장을 간단히 입력해주세요.");
+        return;
+      }
+
+      const resultBox = document.getElementById('rephrase-result');
+      const output = document.getElementById('rephrase-output');
+      
+      resultBox.classList.add('hidden');
+      output.innerText = "AI가 프로페셔널한 이력서 문장으로 다듬는 중...";
+      resultBox.classList.remove('hidden');
+
+      // AI 첨삭 시뮬레이션 (실제 백엔드에서는 Gemini API가 처리)
+      setTimeout(() => {
+        output.innerText = "I successfully spearheaded the deployment of optimized cross-functional systems to streamline legacy workflows and drive measurable business growth.";
+      }, 800);
+    }
+
+    if ('speechSynthesis' in window) {
+      synth.onvoiceschanged = () => { synth.getVoices(); };
+    }
+    renderScript();
+  </script>
+</body>
+</html>
